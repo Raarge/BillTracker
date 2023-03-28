@@ -1,0 +1,197 @@
+﻿<Window x:Class="BillTracker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BillTracker"
+        mc:Ignorable="d"
+        Title="Bill Tracker" Height="450" Width="800">
+    <Grid>
+        <TabControl>
+            <TabItem Header="General">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <!--Row 0-->
+                    <Label Name="lblCurrentAmt" Content="Current Amount: "
+                           Grid.Row="0" Grid.Column="0" FontWeight="Bold"/>
+                    <TextBox x:Name="tbCurrentAmount" Grid.Row="0" Grid.Column="1"
+                             Margin="2,2,2,2" Width="125" IsReadOnly="True"></TextBox>
+                    <Label Name="lblCurrentPd" Content="Current Paid:" 
+                           Grid.Row="0" Grid.Column="3" FontWeight="Bold"/>
+                    <TextBlock x:Name="txblkCurrentPaid" Grid.Row="0" 
+                               Grid.Column="4" Grid.RowSpan="10"
+                               Background="LightGray" Margin="8,8,8,8"></TextBlock>
+                    
+                    <!--Row 1-->
+                    
+                    <!--Row 2-->
+                    <Label Name="lblBillSelection" Content="Bill Selection"
+                           Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4"
+                           HorizontalAlignment="stretch" FontWeight="Bold" 
+                           BorderThickness="1" BorderBrush="Black"
+                           HorizontalContentAlignment="Center"/>
+                    
+                    <!--Row 3-->
+                    <Label Name="lbBillDropDown" Content="Payee: "
+                           Grid.Row="3" Grid.Column="0" FontWeight="Bold"/>
+                    <ComboBox Name="cbPayeeDropdown" Grid.Row="3" Grid.Column="1"
+                              Grid.ColumnSpan="2" Margin="2,2,2,2" HorizontalAlignment="Stretch"
+                              >
+                        <ComboBoxItem IsSelected="True">
+                            Test Item Payee #1
+                        </ComboBoxItem>
+                    </ComboBox>
+
+                    <!--Row 4-->
+                    <Label Name="lblAmountOwed" Content="Amount To Pay: " Grid.Row="4"
+                           Grid.Column="0" FontWeight="bold" />
+                    <TextBox x:Name="tbAmount2Pay" Grid.Row="4" Grid.Column="1"
+                             Margin="2,2,2,2" Width="125" IsReadOnly="True"></TextBox>
+                    <!--Row 5-->
+                    <Label Name="lblPaid" Content="Amount Paid:" FontWeight="Bold"
+                           Grid.Row="5" Grid.Column="0" />
+                    <TextBox x:Name="tbAmountPaid" Grid.Row="5" Grid.Column="1"
+                             Margin="2,2,2,2" Width="125"></TextBox>
+                    
+                    <!--Row 6-->
+                    <Label Name="lblDue" Content="Due Date:" FontWeight="Bold"
+                           Grid.Row="6" Grid.Column="0" />
+                    <TextBox x:Name="tbDueDate" Grid.Row="6" Grid.Column="1"
+                             Margin="2,2,2,2" Width="125" IsReadOnly="True"></TextBox>
+                    
+                    <!--Row 7-->
+                    <Label Name="lblConfirm" Content="Confirmation Num:" FontWeight="Bold"
+                           Grid.Row="7" Grid.Column="0" />
+                    <TextBox x:Name="tbConfirmationNum" Grid.Row="7" Grid.Column="1"
+                             Margin="2,2,2,2" Width="125"></TextBox>
+                    
+                    <!--Row 8-->
+                    <Button x:Name="btnSubmitPayment" Content="Submit Payment"
+                            Margin="2,2,2,2" Grid.Row="8" Grid.Column="0"
+                            Click="btnSubmitPayment_OnClick"></Button>
+                    <!--Row 9-->
+                    
+                </Grid>
+            </TabItem>
+            <TabItem Header="Scratch Pad">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Name="lblBeginAmt" Content="Starting Amount: "/>
+                    <TextBox x:Name="tbStartingAmount" Grid.Row="0" Grid.Column="1"
+                             Margin="2,2,2,2" Width="100"></TextBox>
+                    <Button x:Name="btnStartingAmount" Content="Set Starting Amount"
+                            Margin="2,2,2,2" Grid.Row="1" Grid.Column="0"
+                            Click="btnStartingAmount_OnClick"></Button>
+                </Grid>
+                
+                
+                
+            </TabItem>
+            <TabItem Header="Payment Accounts New">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!--Row 0-->
+                    <Label Name="lbl" Content="New Payment Accounts" Grid.Row="0" 
+                           Grid.Column="0" FontWeight="Bold" BorderBrush="Black"
+                           BorderThickness="1" Grid.ColumnSpan="4" HorizontalAlignment="Stretch"
+                           HorizontalContentAlignment="Center"/>
+                    
+                    <!--Row 1-->
+                    <Label Content="Payee Name: " FontWeight="Bold" Grid.Row="1"
+                           Grid.Column="0" />
+                    <TextBox x:Name="tbPayeeName" Grid.Row="1" Grid.Column="1" 
+                             HorizontalAlignment="Left" VerticalAlignment="Center"
+                             Width="200"></TextBox>
+                    
+                    <!--Row 2-->
+                    <Label Content="Due Date (ie. 15): " FontWeight="Bold" 
+                           Grid.Row="2" Grid.Column="0" />
+                    <TextBox Name="tbDateDue" Grid.Row="2" Grid.Column="1"
+                             Width="50" HorizontalAlignment="left"
+                             VerticalAlignment="Center"></TextBox>
+                    
+                    <!--Row 3-->
+                    <Label Content="Amount Due: " Grid.Row="3" Grid.Column="0"
+                           FontWeight="Bold" />
+                    <TextBox x:Name="tbAmountDue" Grid.Row="3" Grid.Column="1"
+                                 Width="75" HorizontalAlignment="Left"
+                             VerticalAlignment="Center"></TextBox>
+                        
+                    <!--Row 4-->
+                    <Label Content="URL :" Grid.Row="4" Grid.Column="0"
+                               FontWeight="Bold"/>
+                    <TextBox x:Name="tbURL" Grid.Row="4" Grid.Column="1"
+                                 Width="400" HorizontalAlignment="Left"
+                             VerticalAlignment="Center"></TextBox>
+                        
+                    <!--Row 5-->
+                    <Button x:Name="btnNewAccount" Content="Submit Payment"
+                            Margin="2,2,2,2" Grid.Row="5" Grid.Column="0"
+                            Click="btnNewAccount_OnClick"></Button>  
+                        
+                </Grid>     
+            </TabItem>
+            <TabItem Header="Payment Accounts Edit">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>    
+</Window>
