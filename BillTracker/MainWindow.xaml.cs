@@ -42,7 +42,17 @@ namespace BillTracker
 
         private void btnNewAccount_OnClick(object sender, RoutedEventArgs e)
         {
-
+            var payee = GetPayee();
+            var affectedrows = CrudOperations.InsertPayee(payee);
+            if(affectedrows > 0)
+            {
+                MessageBox.Show(payee.PayeeName + " added!");
+            }
+            else
+            {
+                MessageBox.Show(payee.PayeeName + " was not added!");
+            }
+            clearNewPayee();
         }
         private string CurrentAmountStart()
         {
@@ -51,6 +61,26 @@ namespace BillTracker
             
             return tbCurrentAmount.Text;
 
+        }
+
+        public Payee GetPayee()
+        {
+            Payee payee = new Payee();
+            payee.PayeeName = tbPayeeName.Text;
+            payee.DateDue = Convert.ToInt32(tbDateDue.Text);
+            payee.Amountdue = Convert.ToDecimal(tbAmountDue.Text);
+            payee.URL = tbURL.Text;
+
+            return payee;
+        }
+
+        public void clearNewPayee()
+        {
+            tbPayeeName.Text = string.Empty;
+            tbDateDue.Text = string.Empty;
+            tbAmountDue.Text = string.Empty;
+            tbURL.Text = string.Empty;
+            tbPayeeName.Focus();
         }
     }
 }
