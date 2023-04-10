@@ -23,5 +23,27 @@ namespace BillTracker
                 return affectedRows;
             }
         }
+
+        public static bool SearchPayee(string payeeName)
+        {
+            var name = "";
+            using(var connection = new SqlConnection(sqlConnectionString))
+            {
+                connection.Open();
+                var payee =  connection.Query<string>("SELECT PayeeName FROM PaymentAccounts WHERE PayeeName = @pn", new {pn = payeeName});
+                connection.Close();
+                foreach (var row in payee)
+                {
+                    name = row;
+                }
+            }
+            
+            if (name is null || name == "")
+            {
+                return false;
+            }
+            else
+                return true;
+        }
     }
 }

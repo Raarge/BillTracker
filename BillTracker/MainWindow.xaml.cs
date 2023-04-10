@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -43,16 +44,32 @@ namespace BillTracker
         private void btnNewAccount_OnClick(object sender, RoutedEventArgs e)
         {
             var payee = GetPayee();
-            var affectedrows = CrudOperations.InsertPayee(payee);
-            if(affectedrows > 0)
+            var validFlag = checkValidity(payee);
+            var exists = CrudOperations.SearchPayee(payee.PayeeName);
+            if (exists == true)
             {
-                MessageBox.Show(payee.PayeeName + " added!");
+                MessageBox.Show(payee.PayeeName + " already exists.  Use Update Tab Instead!");
+                clearNewPayee();                
+            }
+            else if (validFlag == 1)
+            {
+
             }
             else
             {
-                MessageBox.Show(payee.PayeeName + " was not added!");
+                var affectedrows = CrudOperations.InsertPayee(payee);
+                if (affectedrows > 0)
+                {
+                    MessageBox.Show(payee.PayeeName + " added!");
+                    clearNewPayee();
+                }
+                else
+                {
+                    MessageBox.Show(payee.PayeeName + " was not added!");
+                }
             }
-            clearNewPayee();
+            
+            
         }
         private string CurrentAmountStart()
         {
@@ -82,5 +99,41 @@ namespace BillTracker
             tbURL.Text = string.Empty;
             tbPayeeName.Focus();
         }
+
+        public int checkValidity(Payee payee)
+        {
+            int flag = 0;
+            var first7 = payee.URL.Substring(0, 7);
+            var first8 = payee.URL.Substring(0, 8);
+
+            if (payee.PayeeName.Length > 50) 
+            {
+                MessageBox.Show("Payee Name is Greater than 50 characters.  This is not allowed.");
+                flag = 1;
+                tbPayeeName.Focus();
+            }
+            else if(payee.DateDue < 1 || payee.DateDue > 31)
+            {
+                MessageBox.Show("Date Due is not a valid date");
+                flag = 1;
+                tbDateDue.Focus();
+            }
+            else if(payee.Amountdue < 0.01m)
+            {
+                MessageBox.Show("Amount Due is not valid");
+                flag = 1;
+                tbAmountDue.Focus();
+            }
+            else if(first7 != "HTTP://" && first7 != "http://" && first8 != "HTTPS://" && first8 != "https://")
+            {
+                MessageBox.Show("Url is not valid");
+                flag = 1;
+                tbURL.Focus();
+            }
+
+            return flag;
+        }
+
+        
     }
 }
