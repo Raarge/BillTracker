@@ -20,6 +20,7 @@
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
@@ -54,11 +55,8 @@
                     <Label Name="lbBillDropDown" Content="Payee: "
                            Grid.Row="3" Grid.Column="0" FontWeight="Bold"/>
                     <ComboBox Name="cbPayeeDropdown" Grid.Row="3" Grid.Column="1"
-                              Grid.ColumnSpan="2" Margin="2,2,2,2" HorizontalAlignment="Stretch"
-                              >
-                        <ComboBoxItem IsSelected="True">
-                            Test Item Payee #1
-                        </ComboBoxItem>
+                              Grid.ColumnSpan="2" Margin="2,2,2,2" HorizontalAlignment="Stretch" SelectionChanged="cbPayeeDropdown_SelectionChanged"
+                              ItemsSource="{Binding dropDown}">
                     </ComboBox>
 
                     <!--Row 4-->
@@ -85,10 +83,15 @@
                              Margin="2,2,2,2" Width="125"></TextBox>
                     
                     <!--Row 8-->
-                    <Button x:Name="btnSubmitPayment" Content="Submit Payment"
-                            Margin="2,2,2,2" Grid.Row="8" Grid.Column="0"
-                            Click="btnSubmitPayment_OnClick"></Button>
+                    <Label Name="lblURLpay" Content="URL:" FontWeight="Bold"
+                           Grid.Row="8" Grid.Column="0" />
+                    <TextBox x:Name="tbURLpay" Grid.Row="8" Grid.Column="1"
+                             Margin="2,2,2,2" Width="125" IsReadOnly="True"></TextBox>
+                    
                     <!--Row 9-->
+                    <Button x:Name="btnSubmitPayment" Content="Submit Payment"
+                            Margin="2,2,2,2" Grid.Row="9" Grid.Column="0"
+                            Click="btnSubmitPayment_OnClick"></Button>
                     
                 </Grid>
             </TabItem>

@@ -12,6 +12,7 @@ namespace BillTracker
     public class CrudOperations
     {
         private static string sqlConnectionString = @"Data Source = DESKTOP-NCVPBAF\SQLEXPRESS;initial catalog=BillTracker; Integrated Security=true;";
+       
         public static int InsertPayee(Payee newPayee)
         {
             using (var connection = new SqlConnection(sqlConnectionString))
@@ -19,6 +20,18 @@ namespace BillTracker
                 connection.Open();
                 var affectedRows = connection.Execute("Insert into PaymentAccounts (PayeeName, DateDue, AmountDue, URL) values (@PayeeName, @DateDue, @AmountDue, @URL)",
                     new {PayeeName = newPayee.PayeeName, DateDue = newPayee.DateDue, AmountDue = newPayee.Amountdue, URL = newPayee.URL});
+                connection.Close();
+                return affectedRows;
+            }
+        }
+
+        public static int InsertPayment(Payment newPayment)
+        {
+            using (var connection = new SqlConnection(sqlConnectionString))
+            {
+                connection.Open();
+                var affectedRows = connection.Execute("Insert into Payments (PayeeName, AmountDue, AmountPaid, DateDue, ConfirmationNumber) values (@PayeeName, @AmountDue, @AmountPaid, @DateDue, @ConfirmationNumber)",
+                    new { PayeeName = newPayment.PayeeName, AmountDue = newPayment.AmountDue, AmountPaid = newPayment.AmountPaid, DateDue = newPayment.DateDue, ConfirmationNumber = newPayment.ConfirmationNumber });
                 connection.Close();
                 return affectedRows;
             }
@@ -44,6 +57,18 @@ namespace BillTracker
             }
             else
                 return true;
+        }
+
+        public static List<Payee> GetPayees()
+        {
+            using(var connection = new SqlConnection(sqlConnectionString))
+            {
+                connection.Open();
+                var payees = connection.Query<Payee>("SELECT * from PaymentAccounts").ToList();
+                connection.Close();
+
+                return payees;
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -21,10 +22,19 @@ namespace BillTracker
     /// </summary>
     public partial class MainWindow : Window
     {
+        public List<string> payeeNames
+        {
+            get; set;
+        }
+
         public MainWindow()
         {
             InitializeComponent();
             CurrentAmountStart();
+            cbPayeeDropdown.SetBinding(
+                ItemsControl.ItemsSourceProperty,
+                new Binding { Source = payeeNamesList() });
+            
 
             
         }
@@ -38,7 +48,30 @@ namespace BillTracker
 
         private void btnSubmitPayment_OnClick(object sender, RoutedEventArgs e)
         {
+            var payment = GetPayment();
 
+            var flag = checkPaymentValidity();
+
+            if (flag == 0)
+            {
+                var returnCode = CrudOperations.InsertPayment(payment);
+                if(returnCode > 0) 
+                {
+                    MessageBox.Show($"{payment.PayeeName} was paid");
+                    clearPayment();
+                    // look for a way to reset the pulldown cb
+                }
+                
+                
+            }
+            else
+            {
+                MessageBox.Show("Too Bad Not Valid");
+            }
+            
+
+
+            
         }
 
         private void btnNewAccount_OnClick(object sender, RoutedEventArgs e)
@@ -53,7 +86,7 @@ namespace BillTracker
             }
             else if (validFlag == 1)
             {
-
+                
             }
             else
             {
@@ -62,6 +95,9 @@ namespace BillTracker
                 {
                     MessageBox.Show(payee.PayeeName + " added!");
                     clearNewPayee();
+                    cbPayeeDropdown.SetBinding(
+                     ItemsControl.ItemsSourceProperty,
+                     new Binding { Source = payeeNamesList() });
                 }
                 else
                 {
@@ -100,6 +136,26 @@ namespace BillTracker
             tbPayeeName.Focus();
         }
 
+        public Payment GetPayment()
+        {
+            Payment payment = new Payment();
+
+            payment.PayeeName = Convert.ToString( cbPayeeDropdown.SelectedValue) ;
+            payment.AmountDue = Convert.ToDecimal(tbAmount2Pay.Text.Trim());
+            payment.AmountPaid = Convert.ToDecimal(tbAmountPaid.Text.Trim());
+            payment.DateDue = Convert.ToDateTime($"{tbDueDate.Text.Trim()}");
+            payment.ConfirmationNumber = tbConfirmationNum.Text.Trim();
+
+            return payment;
+
+        }
+
+        public void clearPayment()
+        {
+            tbAmountPaid.Text = string.Empty;
+            tbConfirmationNum.Text = string.Empty;
+        }
+
         public int checkValidity(Payee payee)
         {
             int flag = 0;
@@ -134,6 +190,67 @@ namespace BillTracker
             return flag;
         }
 
-        
+        public int checkPaymentValidity()
+        {
+            int flag = 0;
+
+            if(tbAmountPaid.Text == "" || Convert.ToDecimal(tbAmountPaid.Text) <= 0)
+            {
+                flag = 1;
+                MessageBox.Show("Amount paid must be greater than 0");
+                tbAmountPaid.Focus();
+            }
+            else if(tbConfirmationNum.Text is null || tbConfirmationNum.Text.Length == 0)
+            {
+                flag = 1;
+                MessageBox.Show("You must have a confirmation number");
+                tbConfirmationNum.Focus();
+            }
+
+            return flag;
+        }
+
+        public static List<string> payeeNamesList()
+        {
+            var payees = CrudOperations.GetPayees();
+            List<string> payeeNames = new List<string>();
+
+            foreach (var payee in payees)
+            {
+                payeeNames.Add(payee.PayeeName);
+            }
+
+            return payeeNames;
+        }
+
+        public static Payee payeeFullList(string payeeName)
+        {
+            List<Payee> fullList = CrudOperations.GetPayees();
+
+            for(int i = 0; i < fullList.Count; i++)
+            {
+                if (payeeName == fullList[i].PayeeName)
+                    return fullList[i];
+              
+                    ;
+            }
+            return fullList[0];
+        }
+
+        private void cbPayeeDropdown_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var payeeSentFromPulldown = Convert.ToString( e.AddedItems[0]);
+            
+            tbAmount2Pay.Text = string.Empty;
+            var selectedPayee = payeeFullList(payeeSentFromPulldown);
+            tbAmount2Pay.Text = Convert.ToString(selectedPayee.Amountdue);
+            if (selectedPayee.DateDue < DateTime.Now.Day)
+                tbDueDate.Text = $"{DateTime.Now.AddMonths(1).Month}/{selectedPayee.DateDue}/{DateTime.Now.Year} ";
+            else
+                tbDueDate.Text = $"{DateTime.Now.Month}/{selectedPayee.DateDue}/{DateTime.Now.Year} ";
+            tbURLpay.Text = selectedPayee.URL;
+            
+        }
     }
 }
+
