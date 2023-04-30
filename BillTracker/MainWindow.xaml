@@ -5,12 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BillTracker"
         mc:Ignorable="d"
-        Title="Bill Tracker" Height="450" Width="800">
+        Title="Bill Tracker" Height="550" Width="800">
     <Grid>
-        <TabControl Name="BillTabs">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="569*"/>
+            <ColumnDefinition Width="98*"/>
+            <ColumnDefinition Width="133*"/>
+        </Grid.ColumnDefinitions>
+        <TabControl Name="BillTabs" Grid.ColumnSpan="3">
             <TabItem Header="General" Name="General">
                 <Grid>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
@@ -38,81 +44,79 @@
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="67*" />
+                        <ColumnDefinition Width="87*"/>
                     </Grid.ColumnDefinitions>
                     <!--Row 0-->
                     <Label Name="lblCurrentAmt" Content="Current Amount: "
-                           Grid.Row="0" Grid.Column="0" FontWeight="Bold"/>
+                           Grid.Row="0" Grid.Column="0" FontWeight="Bold" Margin="0,0,0,28" Grid.RowSpan="3"/>
                     <TextBox x:Name="tbCurrentAmount" Grid.Row="0" Grid.Column="1"
                              Margin="2,2,2,2" Width="125" IsReadOnly="True"></TextBox>
-                    <Label Name="lblCurrentPd" Content="Current Paid:" HorizontalAlignment="Right"
-                           Grid.Row="0" Grid.Column="3" FontWeight="Bold"/>
+                    <Label Name="lblCurrentPd" Content="Current Paid:" HorizontalAlignment="Center"
+                           Grid.Row="0" Grid.Column="3" FontWeight="Bold" Margin="0,0,0,28" Grid.RowSpan="3"/>
                     <TextBlock x:Name="txblkCurrentPaid" Grid.Row="0" 
                                Grid.Column="4" Grid.RowSpan="9" 
-                               Background="LightGray" Margin="8,8,8,8"></TextBlock>
-                    
+                               Background="LightGray" Margin="8,8,8,8" Grid.ColumnSpan="2"></TextBlock>
+
                     <!--Row 1-->
-                    
+
                     <!--Row 2-->
                     <Label Name="lblBillSelection" Content="Bill Selection"
-                           Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4"
-                           HorizontalAlignment="stretch" FontWeight="Bold" 
-                           BorderThickness="1" BorderBrush="Black"
-                           HorizontalContentAlignment="Center"/>
-                    
+                           Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" FontWeight="Bold" 
+                           BorderThickness="2" BorderBrush="Black"
+                           HorizontalContentAlignment="Center" Margin="0,0,201,26" Grid.RowSpan="2"/>
+
                     <!--Row 3-->
                     <Label Name="lbBillDropDown" Content="Payee: "
-                           Grid.Row="3" Grid.Column="0" FontWeight="Bold"/>
-                    <ComboBox Name="cbPayeeDropdown" Grid.Row="3" Grid.Column="1"
-                              Grid.ColumnSpan="2" Margin="2,2,2,2" HorizontalAlignment="Stretch" SelectionChanged="cbPayeeDropdown_SelectionChanged"
-                              ItemsSource="{Binding dropDown}">
-                    </ComboBox>
+                           Grid.Row="3" Grid.Column="0" FontWeight="Bold" Margin="0,0,0,26" Grid.RowSpan="2"/>
+                    <ComboBox Name="cbPayeeDropdown" Grid.Row="3" Grid.Column="1" Margin="2,2,2,2" SelectionChanged="cbPayeeDropdown_SelectionChanged"
+                              ItemsSource="{Binding dropDown}"/>
 
                     <!--Row 4-->
                     <Label Name="lblAmountOwed" Content="Amount To Pay: " Grid.Row="4"
-                           Grid.Column="0" FontWeight="bold" />
+                           Grid.Column="0" FontWeight="bold" Margin="0,0,0,26" Grid.RowSpan="2" />
                     <TextBox x:Name="tbAmount2Pay" Grid.Row="4" Grid.Column="1"
                              Margin="2,2,2,2" Width="125" IsReadOnly="True"></TextBox>
                     <!--Row 5-->
                     <Label Name="lblPaid" Content="Amount Paid:" FontWeight="Bold"
-                           Grid.Row="5" Grid.Column="0" />
+                           Grid.Row="5" Grid.Column="0" Margin="0,0,0,26" Grid.RowSpan="2" />
                     <TextBox x:Name="tbAmountPaid" Grid.Row="5" Grid.Column="1"
                              Margin="2,2,2,2" Width="125"></TextBox>
-                    
+
                     <!--Row 6-->
                     <Label Name="lblDue" Content="Due Date:" FontWeight="Bold"
-                           Grid.Row="6" Grid.Column="0" />
+                           Grid.Row="6" Grid.Column="0" Margin="0,0,0,26" Grid.RowSpan="2" />
                     <TextBox x:Name="tbDueDate" Grid.Row="6" Grid.Column="1"
                              Margin="2,2,2,2" Width="125" IsReadOnly="True"></TextBox>
-                    
+
                     <!--Row 7-->
                     <Label Name="lblConfirm" Content="Confirmation Num:" FontWeight="Bold"
-                           Grid.Row="7" Grid.Column="0" />
+                           Grid.Row="7" Grid.Column="0" Margin="0,0,0,26" Grid.RowSpan="2" />
                     <TextBox x:Name="tbConfirmationNum" Grid.Row="7" Grid.Column="1"
                              Margin="2,2,2,2" Width="125"></TextBox>
-                    
+
                     <!--Row 8-->
                     <Label Name="lblURLpay" Content="URL:" FontWeight="Bold"
-                           Grid.Row="8" Grid.Column="0" />
+                           Grid.Row="8" Grid.Column="0" Margin="0,0,0,26" Grid.RowSpan="2" />
                     <TextBox x:Name="tbURLpay" Grid.Row="8" Grid.Column="1"
                              Margin="2,2,2,2" Width="125" IsReadOnly="True"></TextBox>
-                    
+
                     <!--Row 9-->
                     <Label Name="lblCurrentPayPeriod" Content="Current Pay Period:" FontWeight="Bold"
-                           Grid.Row="9" Grid.Column="0"/>
+                           Grid.Row="9" Grid.Column="0" Margin="0,0,0,24" Grid.RowSpan="2"/>
                     <TextBox Name="tbPayPeriod" Grid.Row="9" Grid.Column="1" Margin="2,2,2,2"
                              Width="125" IsReadOnly="True"></TextBox>
                     <Label Name="lblBillsDue" Content="Bills Due:" FontWeight="Bold"
-                           Grid.Row="9" Grid.Column="3" HorizontalAlignment ="Right" />
+                           Grid.Row="9" Grid.Column="3" HorizontalAlignment ="Left" Grid.ColumnSpan="2" Margin="22,0,0,24" Grid.RowSpan="2" />
                     <TextBlock x:Name="txblkBillsDue" Grid.Row="9" 
-                               Grid.Column="4" Grid.RowSpan="11" 
-                               Background="LightGray" Margin="8,8,8,8"></TextBlock>
+                               Grid.Column="4" Grid.RowSpan="12" 
+                               Background="LightGray" Margin="8,8,8,8" Grid.ColumnSpan="2"></TextBlock>
 
                     <!--Row 10-->
                     <Button x:Name="btnSubmitPayment" Content="Submit Payment"
                             Margin="2,2,2,2" Grid.Row="10" Grid.Column="0"
                             Click="btnSubmitPayment_OnClick"></Button>
-                    
+
                     <!--Row 11-->
 
                     <!--Row 12-->
@@ -152,9 +156,9 @@
                             Margin="2,2,2,2" Grid.Row="1" Grid.Column="0"
                             Click="btnStartingAmount_OnClick"></Button>
                 </Grid>
-                
-                
-                
+
+
+
             </TabItem>
             <TabItem Header="Payment Accounts New">
                 <Grid>
@@ -174,47 +178,47 @@
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    
+
                     <!--Row 0-->
                     <Label Name="lbl" Content="New Payment Accounts" Grid.Row="0" 
                            Grid.Column="0" FontWeight="Bold" BorderBrush="Black"
                            BorderThickness="1" Grid.ColumnSpan="4" HorizontalAlignment="Stretch"
                            HorizontalContentAlignment="Center"/>
-                    
+
                     <!--Row 1-->
                     <Label Content="Payee Name: " FontWeight="Bold" Grid.Row="1"
                            Grid.Column="0" />
                     <TextBox x:Name="tbPayeeName" Grid.Row="1" Grid.Column="1" 
                              HorizontalAlignment="Left" VerticalAlignment="Center"
                              Width="200"></TextBox>
-                    
+
                     <!--Row 2-->
                     <Label Content="Due Date (ie. 15): " FontWeight="Bold" 
                            Grid.Row="2" Grid.Column="0" />
                     <TextBox Name="tbDateDue" Grid.Row="2" Grid.Column="1"
                              Width="50" HorizontalAlignment="left"
                              VerticalAlignment="Center"></TextBox>
-                    
+
                     <!--Row 3-->
                     <Label Content="Amount Due: " Grid.Row="3" Grid.Column="0"
                            FontWeight="Bold" />
                     <TextBox x:Name="tbAmountDue" Grid.Row="3" Grid.Column="1"
                                  Width="75" HorizontalAlignment="Left"
                              VerticalAlignment="Center"></TextBox>
-                        
+
                     <!--Row 4-->
                     <Label Content="URL :" Grid.Row="4" Grid.Column="0"
                                FontWeight="Bold"/>
                     <TextBox x:Name="tbURL" Grid.Row="4" Grid.Column="1"
                                  Width="400" HorizontalAlignment="Left"
                              VerticalAlignment="Center"></TextBox>
-                        
+
                     <!--Row 5-->
-                    <Button x:Name="btnNewAccount" Content="Submit Payment"
+                    <Button x:Name="btnNewAccount" Content="Submit New Account"
                             Margin="2,2,2,2" Grid.Row="5" Grid.Column="0"
-                            Click="btnNewAccount_OnClick"></Button>  
-                        
-                </Grid>     
+                            Click="btnNewAccount_OnClick"></Button>
+
+                </Grid>
             </TabItem>
             <TabItem Header="Payment Accounts Edit">
                 <Grid>
@@ -249,22 +253,27 @@
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    
+
                     <!-- Row 0 -->
                     <Label Name="lbPayDate" Content="Pay Date:" Grid.Row="0" Grid.Column="0"
                            FontWeight="Bold" />
                     <DatePicker x:Name="dptbPayDate" Grid.Row="0" Grid.Column="1"
                            FontWeight="Bold" SelectedDateChanged="dptbPayDate_SelectedDateChanged"/>
                     <!-- Last PayCycle Entered Label Stub -->
+                    <Label Name="lbLastEntered" Content="Last Pay Cycle Entered:" Grid.Row="0"
+                           Grid.Column="2" FontWeight="Bold"/>
+                    <TextBlock x:Name="tblkLastEntered" Grid.Row="0" Grid.ColumnSpan="7"
+                               Grid.Column="3" Background="LightGray" 
+                               Margin="8,8,8,8"></TextBlock>
                     <!-- Last PayCycle Entered Text Box Stub -->
-                    
+
                     <!-- Row 1 -->
                     <Label Name="lbEndDate" Content="End Date: " Grid.Row="1" Grid.Column="0"
                            FontWeight="Bold"/>
                     <TextBox x:Name="tbEndDate" Grid.Row="1" Grid.Column="1"
                                  Width="150" HorizontalAlignment="Left"
                              VerticalAlignment="Center"></TextBox>
-                    
+
                     <!-- Row 2-->
                     <Button x:Name="btInsertPayCycle" Content="Submit Pay Cycle"
                             Margin="2,2,2,2" Grid.Row="2" Grid.Column="0"
@@ -272,5 +281,5 @@
                 </Grid>
             </TabItem>
         </TabControl>
-    </Grid>    
+    </Grid>
 </Window>

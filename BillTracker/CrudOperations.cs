@@ -84,13 +84,52 @@ namespace BillTracker
             }
         }
 
-        //public static PayCycle GetCurrentPayCycle()
-        //{
-        //    using(var connection = new SqlConnection(sqlConnectionString))
-        //    {
-        //        connection.Open();
-        //        var payCycles = connection.Query("Select * from PayCycles Where ")
-        //    }
-        //}
+        public static string GetLastPayCycleInTable()
+        { 
+            List<PayCycle> payCyclesEntered = new List<PayCycle>();
+            PayCycle lastPayCycle = new PayCycle();
+            var lastCycle = string.Empty;
+            
+            using(var connection = new SqlConnection(sqlConnectionString))
+            {
+                connection.Open();
+                payCyclesEntered = connection.Query<PayCycle>("Select * from PayCycles ORDER BY PayDate DESC").ToList();
+                connection.Close();
+            }
+
+            lastPayCycle = payCyclesEntered[0];
+
+            lastCycle = $" Pay Day: {lastPayCycle.PayDate.ToShortDateString()}, End Cycle Day: {lastPayCycle.EndDate.ToShortDateString()}";
+
+            return lastCycle;
+        }
+
+        public static List<PayCycle> GetAllPayCycles()
+        {
+            List<PayCycle> payCycles = new List<PayCycle>();
+
+            using (var connection = new SqlConnection(sqlConnectionString))
+            {
+                connection.Open();
+                payCycles = (List<PayCycle>) connection.Query<PayCycle>("Select * from PayCycles");
+                connection.Close();
+            }
+
+            return payCycles;
+        }
+
+        public static List<Payee> getAllBills()
+        {
+            List<Payee> bills = new List<Payee>();
+
+            using ( var connection = new SqlConnection(sqlConnectionString))
+            {
+                connection.Open();
+                bills = (List<Payee>)connection.Query<Payee>("Select * from PaymentAccounts order by PayeeName");
+                connection.Close();
+            }
+
+            return bills;
+        }
     }
 }

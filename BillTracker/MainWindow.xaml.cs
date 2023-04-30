@@ -31,7 +31,9 @@ namespace BillTracker
         {
             InitializeComponent();
             CurrentAmountStart();
-            // add Current PayPeriod stubb
+            populateLastCycle();
+            getCurrentPayCycle();
+            printAllBillsDue();
             cbPayeeDropdown.SetBinding(
                 ItemsControl.ItemsSourceProperty,
                 new Binding { Source = payeeNamesList() });
@@ -63,7 +65,7 @@ namespace BillTracker
                 {
                     MessageBox.Show($"{payment.PayeeName} was paid");
                     tbCurrentAmount.Text = string.Format("{0:C}", currentAmount - payment.AmountPaid);
-                    txblkCurrentPaid.Text = $"    {txblkCurrentPaid.Text} {DateTime.Now.ToShortDateString()} - Payee: {payment.PayeeName}, Amount Paid: ${Convert.ToString(payment.AmountPaid)} \n";
+                    txblkCurrentPaid.Text = $"{txblkCurrentPaid.Text}  {DateTime.Now.ToShortDateString()} - Payee: {payment.PayeeName}, Amount Paid: ${Convert.ToString(payment.AmountPaid)} \n";
                     clearPayment();
 
                     cbPayeeDropdown.SelectedIndex = 0; // look for a way to reset the pulldown cb
@@ -89,6 +91,7 @@ namespace BillTracker
                 {
                     MessageBox.Show("Pay cycle was Added.");
                     clearPayCycle();
+                    populateLastCycle();
                 }
             }
             else
@@ -122,6 +125,9 @@ namespace BillTracker
                     cbPayeeDropdown.SetBinding(
                      ItemsControl.ItemsSourceProperty,
                      new Binding { Source = payeeNamesList() });
+
+                    txblkBillsDue.Text = string.Empty;
+                    printAllBillsDue();
                 }
                 else
                 {
@@ -152,10 +158,25 @@ namespace BillTracker
         public Payee GetPayee()
         {
             Payee payee = new Payee();
+            var dateDue = Convert.ToInt32(tbDateDue.Text);
+
             payee.PayeeName = tbPayeeName.Text;
-            payee.DateDue = Convert.ToInt32(tbDateDue.Text);
+            if(DateTime.Now.Month == 2 && dateDue > 28)
+            {
+                payee.DateDue = 28;
+            }
+            else if(dateDue > 30)
+            {
+                payee.DateDue = 30;
+            }
+            else
+                payee.DateDue = Convert.ToInt32(tbDateDue.Text);
+
             payee.Amountdue = Convert.ToDecimal(tbAmountDue.Text);
             payee.URL = tbURL.Text;
+
+            
+            
 
             return payee;
         }
@@ -332,6 +353,75 @@ namespace BillTracker
                 tbEndDate.Text = Convert.ToString(Convert.ToDateTime(dptbPayDate.Text).AddDays(13).Date.ToShortDateString());
             }
             
+        }
+
+        public void populateLastCycle()
+        {
+            tblkLastEntered.Text = CrudOperations.GetLastPayCycleInTable();
+;       }
+
+        public void getCurrentPayCycle()
+        {
+            var allCycles = CrudOperations.GetAllPayCycles();
+            var payCycle = new PayCycle();
+
+            foreach(var cycle in allCycles)
+            {
+                if (Convert.ToDateTime(cycle.PayDate) >= DateTime.Now.AddDays(-7) && Convert.ToDateTime(cycle.PayDate) <= DateTime.Now.AddDays(13))
+                {
+                    payCycle = cycle;
+                }
+               
+            }
+
+            tbPayPeriod.Text = $"{payCycle.PayDate.ToShortDateString()} - {payCycle.EndDate.ToShortDateString()}";
+        }
+
+        public List<Payee> getCurrentBillsToPay()
+        {
+            var allCycles = CrudOperations.GetAllPayCycles();
+            var payCycle = new PayCycle();
+            var allBills = CrudOperations.getAllBills();
+            var bills = new List<Payee>();
+            var payDate = 0;
+            var endDate = 0;
+
+            foreach (var cycle in allCycles)
+            {
+                if (Convert.ToDateTime(cycle.PayDate) >= DateTime.Now.AddDays(-7) && Convert.ToDateTime(cycle.PayDate) <= DateTime.Now.AddDays(13))
+                {
+                    payCycle = cycle;
+                }
+            }
+
+            payDate = Convert.ToInt32(payCycle.PayDate.Day);
+            endDate = Convert.ToInt32(payCycle.EndDate.Day);
+
+            
+            foreach(var bill  in allBills)
+            {
+                if(bill.DateDue >= payDate && bill.DateDue <= endDate)
+                {
+                    bills.Add(bill);
+                }
+            }
+            
+            
+            return bills;
+        }       
+
+        public void printAllBillsDue()
+        {
+            var billsDue = getCurrentBillsToPay();
+            var billString = "";
+
+            foreach (var bill in billsDue)
+            {
+                if(bill.PayeeName != "--Please Select--")
+                    billString = $"{billString}  Payee Name: {bill.PayeeName}  Due Date: {bill.DateDue} Amount Due: ${bill.Amountdue} \n";
+            }
+
+            txblkBillsDue.Text = billString;
         }
     }
 }
