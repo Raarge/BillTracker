@@ -7,10 +7,19 @@
         mc:Ignorable="d"
         Title="Bill Tracker" Height="450" Width="800">
     <Grid>
-        <TabControl>
-            <TabItem Header="General">
+        <TabControl Name="BillTabs">
+            <TabItem Header="General" Name="General">
                 <Grid>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
@@ -36,10 +45,10 @@
                            Grid.Row="0" Grid.Column="0" FontWeight="Bold"/>
                     <TextBox x:Name="tbCurrentAmount" Grid.Row="0" Grid.Column="1"
                              Margin="2,2,2,2" Width="125" IsReadOnly="True"></TextBox>
-                    <Label Name="lblCurrentPd" Content="Current Paid:" 
+                    <Label Name="lblCurrentPd" Content="Current Paid:" HorizontalAlignment="Right"
                            Grid.Row="0" Grid.Column="3" FontWeight="Bold"/>
                     <TextBlock x:Name="txblkCurrentPaid" Grid.Row="0" 
-                               Grid.Column="4" Grid.RowSpan="10"
+                               Grid.Column="4" Grid.RowSpan="9" 
                                Background="LightGray" Margin="8,8,8,8"></TextBlock>
                     
                     <!--Row 1-->
@@ -89,13 +98,40 @@
                              Margin="2,2,2,2" Width="125" IsReadOnly="True"></TextBox>
                     
                     <!--Row 9-->
+                    <Label Name="lblCurrentPayPeriod" Content="Current Pay Period:" FontWeight="Bold"
+                           Grid.Row="9" Grid.Column="0"/>
+                    <TextBox Name="tbPayPeriod" Grid.Row="9" Grid.Column="1" Margin="2,2,2,2"
+                             Width="125" IsReadOnly="True"></TextBox>
+                    <Label Name="lblBillsDue" Content="Bills Due:" FontWeight="Bold"
+                           Grid.Row="9" Grid.Column="3" HorizontalAlignment ="Right" />
+                    <TextBlock x:Name="txblkBillsDue" Grid.Row="9" 
+                               Grid.Column="4" Grid.RowSpan="11" 
+                               Background="LightGray" Margin="8,8,8,8"></TextBlock>
+
+                    <!--Row 10-->
                     <Button x:Name="btnSubmitPayment" Content="Submit Payment"
-                            Margin="2,2,2,2" Grid.Row="9" Grid.Column="0"
+                            Margin="2,2,2,2" Grid.Row="10" Grid.Column="0"
                             Click="btnSubmitPayment_OnClick"></Button>
                     
+                    <!--Row 11-->
+
+                    <!--Row 12-->
+
+                    <!--Row 13-->
+
+                    <!--Row 14-->
+
+                    <!--Row 15-->
+
+                    <!--Row 16-->
+
+                    <!--Row 17-->
+
+                    <!--Row 18-->
+
                 </Grid>
             </TabItem>
-            <TabItem Header="Scratch Pad">
+            <TabItem Header="Scratch Pad" Name="Scratch">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
@@ -193,6 +229,46 @@
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Pay Cycles Entry">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Row 0 -->
+                    <Label Name="lbPayDate" Content="Pay Date:" Grid.Row="0" Grid.Column="0"
+                           FontWeight="Bold" />
+                    <DatePicker x:Name="dptbPayDate" Grid.Row="0" Grid.Column="1"
+                           FontWeight="Bold" SelectedDateChanged="dptbPayDate_SelectedDateChanged"/>
+                    <!-- Last PayCycle Entered Label Stub -->
+                    <!-- Last PayCycle Entered Text Box Stub -->
+                    
+                    <!-- Row 1 -->
+                    <Label Name="lbEndDate" Content="End Date: " Grid.Row="1" Grid.Column="0"
+                           FontWeight="Bold"/>
+                    <TextBox x:Name="tbEndDate" Grid.Row="1" Grid.Column="1"
+                                 Width="150" HorizontalAlignment="Left"
+                             VerticalAlignment="Center"></TextBox>
+                    
+                    <!-- Row 2-->
+                    <Button x:Name="btInsertPayCycle" Content="Submit Pay Cycle"
+                            Margin="2,2,2,2" Grid.Row="2" Grid.Column="0"
+                            Click="btnInsertPayCycle_OnClick"></Button>
                 </Grid>
             </TabItem>
         </TabControl>

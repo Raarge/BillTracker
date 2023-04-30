@@ -31,6 +31,7 @@ namespace BillTracker
         {
             InitializeComponent();
             CurrentAmountStart();
+            // add Current PayPeriod stubb
             cbPayeeDropdown.SetBinding(
                 ItemsControl.ItemsSourceProperty,
                 new Binding { Source = payeeNamesList() });
@@ -44,34 +45,57 @@ namespace BillTracker
             var amount = Convert.ToDecimal( tbStartingAmount.Text.Trim());
             tbCurrentAmount.Text = string.Empty;
             tbCurrentAmount.Text = string.Format("{0:C}", amount);
+
+            BillTabs.SelectedIndex = 0;
+            cbPayeeDropdown.Focus();
         }
 
         private void btnSubmitPayment_OnClick(object sender, RoutedEventArgs e)
         {
             var payment = GetPayment();
-
             var flag = checkPaymentValidity();
+            var currentAmount = Convert.ToDecimal(tbCurrentAmount.Text.Trim().Substring(1));
 
             if (flag == 0)
             {
                 var returnCode = CrudOperations.InsertPayment(payment);
-                if(returnCode > 0) 
+                if (returnCode > 0)
                 {
                     MessageBox.Show($"{payment.PayeeName} was paid");
+                    tbCurrentAmount.Text = string.Format("{0:C}", currentAmount - payment.AmountPaid);
+                    txblkCurrentPaid.Text = $"    {txblkCurrentPaid.Text} {DateTime.Now.ToShortDateString()} - Payee: {payment.PayeeName}, Amount Paid: ${Convert.ToString(payment.AmountPaid)} \n";
                     clearPayment();
-                    // look for a way to reset the pulldown cb
+
+                    cbPayeeDropdown.SelectedIndex = 0; // look for a way to reset the pulldown cb
                 }
-                
-                
+
+
             }
             else
             {
                 MessageBox.Show("Too Bad Not Valid");
+            }            
+        }
+
+        private void btnInsertPayCycle_OnClick(object sender, RoutedEventArgs e)
+        {
+            var payCycle = GetNewPayCycle();
+            var validFlag = checkPayCycleValidity(payCycle);
+
+            if (validFlag == 0)
+            {
+                var returnCode = CrudOperations.InsertPayCycle(payCycle);
+                if(returnCode > 0)
+                {
+                    MessageBox.Show("Pay cycle was Added.");
+                    clearPayCycle();
+                }
             }
-            
+            else
+            {
+                
+            }
 
-
-            
         }
 
         private void btnNewAccount_OnClick(object sender, RoutedEventArgs e)
@@ -82,11 +106,11 @@ namespace BillTracker
             if (exists == true)
             {
                 MessageBox.Show(payee.PayeeName + " already exists.  Use Update Tab Instead!");
-                clearNewPayee();                
+                clearNewPayee();
             }
             else if (validFlag == 1)
             {
-                
+
             }
             else
             {
@@ -104,9 +128,9 @@ namespace BillTracker
                     MessageBox.Show(payee.PayeeName + " was not added!");
                 }
             }
-            
-            
         }
+
+
         private string CurrentAmountStart()
         {
             if(tbCurrentAmount.Text == string.Empty)
@@ -114,6 +138,15 @@ namespace BillTracker
             
             return tbCurrentAmount.Text;
 
+        }
+
+        public PayCycle GetNewPayCycle()
+        {
+            PayCycle payCycle = new PayCycle();
+            payCycle.PayDate = Convert.ToDateTime(dptbPayDate.Text);
+            payCycle.EndDate = Convert.ToDateTime(tbEndDate.Text);
+
+            return payCycle;
         }
 
         public Payee GetPayee()
@@ -142,7 +175,7 @@ namespace BillTracker
 
             payment.PayeeName = Convert.ToString( cbPayeeDropdown.SelectedValue) ;
             payment.AmountDue = Convert.ToDecimal(tbAmount2Pay.Text.Trim());
-            payment.AmountPaid = Convert.ToDecimal(tbAmountPaid.Text.Trim());
+            payment.AmountPaid = Convert.ToDecimal(string.Format("{0:0.00}", tbAmountPaid.Text.Trim()));
             payment.DateDue = Convert.ToDateTime($"{tbDueDate.Text.Trim()}");
             payment.ConfirmationNumber = tbConfirmationNum.Text.Trim();
 
@@ -154,6 +187,12 @@ namespace BillTracker
         {
             tbAmountPaid.Text = string.Empty;
             tbConfirmationNum.Text = string.Empty;
+        }
+
+        public void clearPayCycle()
+        {
+            dptbPayDate.Text = string.Empty;
+            tbEndDate.Text = string.Empty;
         }
 
         public int checkValidity(Payee payee)
@@ -210,6 +249,25 @@ namespace BillTracker
             return flag;
         }
 
+        public int checkPayCycleValidity(PayCycle sentPayCycle)
+        {
+            int flag = 0;
+
+            if(Convert.ToString(sentPayCycle.PayDate) is null)
+            {
+                flag = 1;
+                MessageBox.Show("You must choose a date");
+                dptbPayDate.Focus();
+            }
+            else if (tbEndDate.Text is null)
+            {
+                flag = 1;
+                MessageBox.Show("Error in Calcultion!");
+                tbEndDate.Focus();
+            }
+
+            return flag;
+        }
         public static List<string> payeeNamesList()
         {
             var payees = CrudOperations.GetPayees();
@@ -219,6 +277,8 @@ namespace BillTracker
             {
                 payeeNames.Add(payee.PayeeName);
             }
+
+            payeeNames.Sort();
 
             return payeeNames;
         }
@@ -239,16 +299,38 @@ namespace BillTracker
 
         private void cbPayeeDropdown_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var payeeSentFromPulldown = Convert.ToString( e.AddedItems[0]);
-            
-            tbAmount2Pay.Text = string.Empty;
-            var selectedPayee = payeeFullList(payeeSentFromPulldown);
-            tbAmount2Pay.Text = Convert.ToString(selectedPayee.Amountdue);
-            if (selectedPayee.DateDue < DateTime.Now.Day)
-                tbDueDate.Text = $"{DateTime.Now.AddMonths(1).Month}/{selectedPayee.DateDue}/{DateTime.Now.Year} ";
+            var startAmount = tbCurrentAmount.Text.Substring(1);
+            if (Convert.ToDecimal(startAmount) == 0.00M)
+            {
+                MessageBox.Show($"The starting amount is still set to $0.00.  Correct and Try Again.");
+
+                BillTabs.SelectedIndex = 1;
+                tbStartingAmount.Focus();
+            }
             else
-                tbDueDate.Text = $"{DateTime.Now.Month}/{selectedPayee.DateDue}/{DateTime.Now.Year} ";
-            tbURLpay.Text = selectedPayee.URL;
+            {
+                var payeeSentFromPulldown = Convert.ToString(e.AddedItems[0]);
+
+                tbAmount2Pay.Text = string.Empty;
+                var selectedPayee = payeeFullList(payeeSentFromPulldown);
+                tbAmount2Pay.Text = Convert.ToString(selectedPayee.Amountdue);
+                if (selectedPayee.DateDue < DateTime.Now.Day)
+                    tbDueDate.Text = $"{DateTime.Now.AddMonths(1).Month}/{selectedPayee.DateDue}/{DateTime.Now.Year} ";
+                else
+                    tbDueDate.Text = $"{DateTime.Now.Month}/{selectedPayee.DateDue}/{DateTime.Now.Year} ";
+                tbURLpay.Text = selectedPayee.URL;
+                
+            }
+            
+            
+        }
+
+        private void dptbPayDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dptbPayDate.Text.Length > 0)
+            {
+                tbEndDate.Text = Convert.ToString(Convert.ToDateTime(dptbPayDate.Text).AddDays(13).Date.ToShortDateString());
+            }
             
         }
     }

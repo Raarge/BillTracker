@@ -37,6 +37,19 @@ namespace BillTracker
             }
         }
 
+        public static int InsertPayCycle(PayCycle newPayCycle)
+        {
+            using (var connection = new SqlConnection(sqlConnectionString))
+            {
+                connection.Open();
+                var affectedRows = connection.Execute("Insert into PayCycles (PayDate, EndDate) values (@PayDate, @EndDate)",
+                    new { PayDate = newPayCycle.PayDate, EndDate = newPayCycle.EndDate });
+                connection.Close();
+
+                return affectedRows;
+            }
+        }
+
         public static bool SearchPayee(string payeeName)
         {
             var name = "";
@@ -70,5 +83,14 @@ namespace BillTracker
                 return payees;
             }
         }
+
+        //public static PayCycle GetCurrentPayCycle()
+        //{
+        //    using(var connection = new SqlConnection(sqlConnectionString))
+        //    {
+        //        connection.Open();
+        //        var payCycles = connection.Query("Select * from PayCycles Where ")
+        //    }
+        //}
     }
 }
